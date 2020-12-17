@@ -52,18 +52,14 @@ class RecentEarthquakeFragment : Fragment() {
         val placeTextView=itemTextView.findViewById(R.id.place ) as TextView
        val titleTextView = itemTextView.findViewById(R.id.title) as TextView
        val timeTextView = itemTextView.findViewById(R.id.time) as TextView
-       //val magTextView = itemTextView.findViewById(R.id.mag) as TextView
        val magButton = itemTextView.findViewById(R.id.mag) as Button
 
 
-
-       // val bindTitle: (CharSequence) -> Unit = itemTextView::setText
 
         fun bind(erthData: ErthData){
             placeTextView.setText(erthData.properties.place)
             titleTextView.setText(erthData.properties.title)
             timeTextView.text = convertToTime(erthData.properties.time)
-           // magTextView.setText(erthData.properties.mag)
             MagButton(erthData.properties.mag)
             if (erthData.properties.title.contains(" of ".toRegex())) {
                 placeTextView.text = erthData.properties.title.split("of")[0] + "of"
@@ -85,10 +81,10 @@ class RecentEarthquakeFragment : Fragment() {
             magButton.apply {
                 text = mag.toBigDecimal().setScale(1, RoundingMode.CEILING).toString()
                 when {
-                    mag < 4.0 -> setBackgroundResource(R.drawable.mag_buton_low_level_shape)
-                    mag < 5.0 -> setBackgroundResource(R.drawable.mag_buton_premed_level_shape)
-                    mag <= 6.0 -> setBackgroundResource(R.drawable.mag_buton_medium_level_shape)
-                    mag in 6.0..10.0 -> setBackgroundResource(R.drawable.mag_buton_high_level_shape)
+                    mag < 3.9 -> setBackgroundResource(R.drawable.green_shape)
+                    mag < 4.9 -> setBackgroundResource(R.drawable.yallow_shape)
+                    mag <= 5.9 -> setBackgroundResource(R.drawable.orange_shape)
+                    mag in 6.0..10.0 -> setBackgroundResource(R.drawable.red_shape)
                 }
             }
         }
@@ -106,7 +102,6 @@ class RecentEarthquakeFragment : Fragment() {
         override fun getItemCount(): Int = recentItems.size
         override fun onBindViewHolder(holder: EarthHolder, position: Int) {
             val recentItem = recentItems[position]
-          //  holder.bind(recentItem.properties.place)
             holder.bind(recentItem)
         }
     }
