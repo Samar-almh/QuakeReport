@@ -50,9 +50,9 @@ class RecentEarthquakeFragment : Fragment() {
     private class EarthHolder(itemTextView: View)
         : RecyclerView.ViewHolder(itemTextView) {
         val placeTextView=itemTextView.findViewById(R.id.place ) as TextView
-       val titleTextView = itemTextView.findViewById(R.id.title) as TextView
-       val timeTextView = itemTextView.findViewById(R.id.time) as TextView
-       val magButton = itemTextView.findViewById(R.id.mag) as Button
+        val titleTextView = itemTextView.findViewById(R.id.title) as TextView
+        val timeTextView = itemTextView.findViewById(R.id.time) as TextView
+        val magButton = itemTextView.findViewById(R.id.mag) as Button
 
 
 
@@ -96,7 +96,7 @@ class RecentEarthquakeFragment : Fragment() {
             parent: ViewGroup,
             viewType: Int
         ): EarthHolder {
-         val view = LayoutInflater.from(parent.context).inflate(R.layout.erthquick_det,parent,false)
+            val view = LayoutInflater.from(parent.context).inflate(R.layout.erthquick_det,parent,false)
             return EarthHolder(view)
         }
         override fun getItemCount(): Int = recentItems.size
