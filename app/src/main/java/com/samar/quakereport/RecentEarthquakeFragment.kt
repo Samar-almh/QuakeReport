@@ -47,11 +47,12 @@ class RecentEarthquakeFragment : Fragment() {
             })
     }
 
-    private class EarthHolder(itemTextView: View)
+    private inner class EarthHolder(itemTextView: View)
         : RecyclerView.ViewHolder(itemTextView) {
         val placeTextView=itemTextView.findViewById(R.id.place ) as TextView
         val titleTextView = itemTextView.findViewById(R.id.title) as TextView
         val timeTextView = itemTextView.findViewById(R.id.time) as TextView
+        val dateTextView = itemTextView.findViewById(R.id.date) as TextView
         val magButton = itemTextView.findViewById(R.id.mag) as Button
 
 
@@ -59,6 +60,7 @@ class RecentEarthquakeFragment : Fragment() {
         fun bind(erthData: ErthData){
             placeTextView.setText(erthData.properties.place)
             titleTextView.setText(erthData.properties.title)
+            dateTextView.text = converToDate(erthData.properties.time)
             timeTextView.text = convertToTime(erthData.properties.time)
             MagButton(erthData.properties.mag)
             if (erthData.properties.title.contains(" of ".toRegex())) {
@@ -70,6 +72,17 @@ class RecentEarthquakeFragment : Fragment() {
             }
         }
 
+        fun converToDate(dateTime: Long): String {
+            val calendar = Calendar.getInstance()
+
+            calendar.time = Date(dateTime)
+
+            val earthquakeDate: String = "${calendar.get(Calendar.YEAR)}-" +
+                    "${calendar.get(Calendar.MONTH)}-" +
+                    "${calendar.get(Calendar.DAY_OF_MONTH)}"
+
+            return earthquakeDate
+        }
         fun convertToTime(dateTime: Long): String {
             val calendar = Calendar.getInstance()
             calendar.time = Date(dateTime)
@@ -90,21 +103,25 @@ class RecentEarthquakeFragment : Fragment() {
         }
 
     }
-    private class EarthAdapter(private val recentItems: List<ErthData>)
-        : RecyclerView.Adapter<EarthHolder>() {
-        override fun onCreateViewHolder(
-            parent: ViewGroup,
-            viewType: Int
-        ): EarthHolder {
-            val view = LayoutInflater.from(parent.context).inflate(R.layout.erthquick_det,parent,false)
-            return EarthHolder(view)
-        }
+   inner class EarthAdapter(private val recentItems: List<ErthData>) :
+       RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+
+       override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
+           var view: View
+           view = layoutInflater.inflate(
+               R.layout.erthquick_det,
+               parent, false
+           )
+           return EarthHolder(view)
+       }
         override fun getItemCount(): Int = recentItems.size
-        override fun onBindViewHolder(holder: EarthHolder, position: Int) {
-            val recentItem = recentItems[position]
-            holder.bind(recentItem)
-        }
-    }
+
+       override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
+           val recentItem = recentItems[position]
+           if (holder is EarthHolder)
+               holder.bind(recentItem)
+       }
+   }
 
     companion object {
         fun newInstance() = RecentEarthquakeFragment()
