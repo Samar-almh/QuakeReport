@@ -1,5 +1,7 @@
 package com.samar.quakereport
 
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -54,14 +56,18 @@ class RecentEarthquakeFragment : Fragment() {
         val timeTextView = itemTextView.findViewById(R.id.time) as TextView
         val dateTextView = itemTextView.findViewById(R.id.date) as TextView
         val magButton = itemTextView.findViewById(R.id.mag) as Button
+        private var longtude: Double = 0.0
+        private var latitude: Double = 0.0
+
 
 
 
         fun bind(erthData: ErthData){
             placeTextView.setText(erthData.properties.place)
             titleTextView.setText(erthData.properties.title)
-            dateTextView.text = converToDate(erthData.properties.time)
+            dateTextView.text = convertToDate(erthData.properties.time)
             timeTextView.text = convertToTime(erthData.properties.time)
+            rCoordinates(erthData.geometry.coordinates)
             MagButton(erthData.properties.mag)
             if (erthData.properties.title.contains(" of ".toRegex())) {
                 placeTextView.text = erthData.properties.title.split("of")[0] + "of"
@@ -72,7 +78,7 @@ class RecentEarthquakeFragment : Fragment() {
             }
         }
 
-        fun converToDate(dateTime: Long): String {
+        fun convertToDate(dateTime: Long): String {
             val calendar = Calendar.getInstance()
 
             calendar.time = Date(dateTime)
@@ -102,6 +108,20 @@ class RecentEarthquakeFragment : Fragment() {
             }
         }
 
+        fun rCoordinates(coordinates: List<Double>) {
+            longtude = coordinates[0]
+            latitude = coordinates[1]
+
+        }
+
+     fun onClick(v: View?) {
+            val uri = Uri.parse("geometry:$latitude,$longtude")
+            val intent = Intent(Intent.ACTION_VIEW).apply {
+                data = uri
+            }
+            startActivity(intent)
+        }
+
     }
    inner class EarthAdapter(private val recentItems: List<ErthData>) :
        RecyclerView.Adapter<RecyclerView.ViewHolder>() {
@@ -114,7 +134,9 @@ class RecentEarthquakeFragment : Fragment() {
            )
            return EarthHolder(view)
        }
-        override fun getItemCount(): Int = recentItems.size
+        override fun getItemCount(): Int {
+          return  recentItems.size
+        }
 
        override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
            val recentItem = recentItems[position]
